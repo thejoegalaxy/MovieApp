@@ -2,36 +2,57 @@
 import React, {useState, useEffect} from 'react';
 import {View, ScrollView, StyleSheet, Dimensions, FlatList} from 'react-native';
 import {SliderBox} from 'react-native-image-slider-box';
-import {getPopularMovies, getUpcomingMovies} from '../services/services.js';
+import {
+  getPopularMovies,
+  getUpcomingMovies,
+  getFamilyMovies,
+  getPopularTv,
+  getDocumentaries,
+} from '../services/services.js';
 import react from 'react';
 import List from '../components/List'; //calling a pure Component no curly brackets.
 
 const dimensions = Dimensions.get('screen');
 const Home = () => {
-  const [moviesImages, setMoviesImages] = useState('');
-  const [popularMovies, setPopularMovies] = useState('');
+  const [moviesImages, setMoviesImages] = useState();
+  const [popularMovies, setPopularMovies] = useState();
+  const [familyMovies, setFamilyMovies] = useState();
+  const [popularTv, setPopularTv] = useState();
+  const [documentaries, setDocumentaries] = useState();
   const [error, setError] = useState(false);
 
+  const getData = () => {
+    return Promise.all([
+      getUpcomingMovies(),
+      getPopularMovies(),
+      getFamilyMovies(),
+      getDocumentaries(),
+      getPopularTv(),
+    ]);
+  };
   useEffect(() => {
-    console.log(dimensions);
-    getUpcomingMovies()
-      .then(movies => {
-        const moviesImagesArray = [];
-        movies.forEach(movie => {
-          moviesImagesArray.push(
-            'https://image.tmdb.org/t/p/w500' + movie.poster_path,
-          );
-        });
-        setMoviesImages(moviesImagesArray);
-      })
-      .catch(err => {
-        setError(err);
-      });
-
-    getPopularMovies()
-      .then(movies => {
-        setPopularMovies(movies);
-      })
+    getData()
+      .then(
+        ([
+          upcomingMoviesData,
+          popularMoviesData,
+          familyMoviesData,
+          documentariesData,
+          popularTvData,
+        ]) => {
+          const moviesImagesArray = [];
+          upcomingMoviesData.forEach(movie => {
+            moviesImagesArray.push(
+              'https://image.tmdb.org/t/p/w500' + movie.poster_path,
+            );
+          });
+          setMoviesImages(moviesImagesArray);
+          setPopularMovies(popularMoviesData);
+          setFamilyMovies(familyMoviesData);
+          setDocumentaries(documentariesData);
+          setPopularTv(popularTvData);
+        },
+      )
       .catch(err => {
         setError(err);
       });
@@ -40,18 +61,42 @@ const Home = () => {
   return (
     <react.Fragment>
       <ScrollView>
-        <View style={styles.sliderContainer}>
-          <SliderBox
-            images={moviesImages}
-            autoplay={true}
-            circleLoop={true}
-            sliderBoxHeight={dimensions.height / 1.5}
-            dotStyle={styles.sliderStyle}
-          />
-        </View>
-        <View style={styles.carousel}>
-          <List title="Popular Movies" content={popularMovies}></List>
-        </View>
+        {/* Upcoming Movies */}
+        {moviesImages && (
+          <View style={styles.sliderContainer}>
+            <SliderBox
+              images={moviesImages}
+              autoplay={true}
+              circleLoop={true}
+              sliderBoxHeight={dimensions.height / 1.5}
+              dotStyle={styles.sliderStyle}
+            />
+          </View>
+        )}
+        {/* Popular Movies */}
+        {popularMovies && (
+          <View style={styles.carousel}>
+            <List title="Popular Movies" content={popularMovies} />
+          </View>
+        )}
+        {/* Family Movies */}
+        {familyMovies && (
+          <View style={styles.carousel}>
+            <List title="Family Movies" content={familyMovies} />
+          </View>
+        )}
+        {/* Popular TV */}
+        {popularTv && (
+          <View style={styles.carousel}>
+            <List title="Popular TV Shows" content={popularTv} />
+          </View>
+        )}
+        {/* Documentary */}
+        {documentaries && (
+          <View style={styles.carousel}>
+            <List title="Documentary" content={documentaries} />
+          </View>
+        )}
       </ScrollView>
     </react.Fragment>
   );
