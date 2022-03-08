@@ -17,6 +17,7 @@ import {
 } from '../services/services.js';
 import react from 'react';
 import List from '../components/List'; //calling a pure Component no curly brackets.
+import Error from '../components/Error';
 
 const dimensions = Dimensions.get('screen');
 const Home = () => {
@@ -60,8 +61,8 @@ const Home = () => {
           setPopularTv(popularTvData);
         },
       )
-      .catch(err => {
-        setError(err);
+      .catch(() => {
+        setError(true);
       })
       .finally(() => {
         setLoaded(true);
@@ -70,7 +71,7 @@ const Home = () => {
 
   return (
     <react.Fragment>
-      {loaded && (
+      {loaded && !error && (
         <ScrollView>
           {/* Upcoming Movies */}
           {moviesImages && (
@@ -111,6 +112,7 @@ const Home = () => {
         </ScrollView>
       )}
       {!loaded && <ActivityIndicator size="large" />}
+      {error && <Error />}
     </react.Fragment>
   );
 };
