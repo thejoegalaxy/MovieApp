@@ -20,7 +20,7 @@ import List from '../components/List'; //calling a pure Component no curly brack
 import Error from '../components/Error';
 
 const dimensions = Dimensions.get('screen');
-const Home = () => {
+const Home = ({navigation}) => {
   const [moviesImages, setMoviesImages] = useState();
   const [popularMovies, setPopularMovies] = useState();
   const [familyMovies, setFamilyMovies] = useState();
@@ -88,25 +88,41 @@ const Home = () => {
           {/* Popular Movies */}
           {popularMovies && (
             <View style={styles.carousel}>
-              <List title="Popular Movies" content={popularMovies} />
+              <List
+                navigation={navigation}
+                title="Popular Movies"
+                content={popularMovies}
+              />
             </View>
           )}
           {/* Family Movies */}
           {familyMovies && (
             <View style={styles.carousel}>
-              <List title="Family Movies" content={familyMovies} />
+              <List
+                navigation={navigation}
+                title="Family Movies"
+                content={familyMovies}
+              />
             </View>
           )}
           {/* Popular TV */}
           {popularTv && (
             <View style={styles.carousel}>
-              <List title="Popular TV Shows" content={popularTv} />
+              <List
+                navigation={navigation}
+                title="Popular TV Shows"
+                content={popularTv}
+              />
             </View>
           )}
           {/* Documentary */}
           {documentaries && (
             <View style={styles.carousel}>
-              <List title="Documentary" content={documentaries} />
+              <List
+                navigation={navigation}
+                title="Documentary"
+                content={documentaries}
+              />
             </View>
           )}
         </ScrollView>

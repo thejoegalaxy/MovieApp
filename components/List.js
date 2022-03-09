@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
   title: PropTypes.string,
-  content: PropTypes.object,
+  content: PropTypes.array,
 };
 
 class List extends React.PureComponent {
   render() {
-    const {title, content} = this.props;
+    const {navigation, title, content} = this.props;
     return (
       <View>
         <View style={styles.list}>
@@ -20,7 +20,9 @@ class List extends React.PureComponent {
           <FlatList
             horizontal={true}
             data={content}
-            renderItem={({item}) => <Card item={item} />}
+            renderItem={({item}) => (
+              <Card navigation={navigation} item={item} />
+            )}
           />
         </View>
       </View>
