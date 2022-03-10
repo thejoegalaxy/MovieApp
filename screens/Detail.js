@@ -16,6 +16,7 @@ import Star from 'react-native-star-view';
 //only 1 component in PlayButton so no brackets importing.
 import PlayButton from '../components/PlayButton';
 import dateFormat from 'dateformat';
+import Video from '../components/Video';
 //import Error from '../components/Error';
 
 const placeholderImage = require('../assets/images/placeholderImage.jpg');
@@ -89,11 +90,12 @@ const Detail = ({route, navigation}) => {
               </Text>
             </View>
           </ScrollView>
-          <Modal animationType="slide" visible={modalVisible}>
+          <Modal
+            supportedOrientations={['portrait', 'landscape']}
+            animationType="slide"
+            visible={modalVisible}>
             <View style={styles.videoModal}>
-              <Pressable onPress={() => videoShown()}>
-                <Text>{'Hide Modal'}</Text>
-              </Pressable>
+              <Video onClose={videoShown} />
             </View>
           </Modal>
         </View>
