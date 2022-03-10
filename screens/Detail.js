@@ -7,6 +7,8 @@ import {
   Dimensions,
   Image,
   Text,
+  Modal,
+  Pressable,
 } from 'react-native';
 //brackets are because services file has multiple exports.
 import {getMovie} from '../services/services';
@@ -24,6 +26,7 @@ const Detail = ({route, navigation}) => {
   const [movieDetail, setMovieDetail] = useState();
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   //TODO: if getting TV details need to call getTV not getMovie.
   // will have to pass in if this is a tv detail card or movie detail card.
@@ -41,46 +44,59 @@ const Detail = ({route, navigation}) => {
       });
   }, [movieId]);
 
+  const videoShown = () => {
+    setModalVisible(!modalVisible);
+  };
+
   return (
     <React.Fragment>
       {loaded && (
-        <ScrollView>
-          <Image
-            resizeMode="cover"
-            style={styles.image}
-            source={
-              movieDetail.poster_path
-                ? {
-                    uri:
-                      'https://image.tmdb.org/t/p/w500' +
-                      movieDetail.poster_path,
-                  }
-                : placeholderImage
-            }></Image>
-          <View style={styles.container}>
-            <View style={styles.playButton}>
-              <PlayButton />
-            </View>
-            <Text style={styles.movieTitle}>{movieDetail.title}</Text>
-            {movieDetail.genres && (
-              <View style={styles.genresContainer}>
-                {movieDetail.genres.map(genre => {
-                  return (
-                    <Text style={styles.genre} key={genre.id}>
-                      {genre.name}
-                    </Text>
-                  );
-                })}
+        <View>
+          <ScrollView>
+            <Image
+              resizeMode="cover"
+              style={styles.image}
+              source={
+                movieDetail.poster_path
+                  ? {
+                      uri:
+                        'https://image.tmdb.org/t/p/w500' +
+                        movieDetail.poster_path,
+                    }
+                  : placeholderImage
+              }></Image>
+            <View style={styles.container}>
+              <View style={styles.playButton}>
+                <PlayButton handlePress={videoShown} />
               </View>
-            )}
-            <Star style={styles.star} score={movieDetail.vote_average / 2} />
-            <Text style={styles.overview}>{movieDetail.overview}</Text>
-            <Text style={styles.releaseDate}>
-              {'Release date: ' +
-                dateFormat(movieDetail.release_date, 'mmmm dS, yyyy')}
-            </Text>
-          </View>
-        </ScrollView>
+              <Text style={styles.movieTitle}>{movieDetail.title}</Text>
+              {movieDetail.genres && (
+                <View style={styles.genresContainer}>
+                  {movieDetail.genres.map(genre => {
+                    return (
+                      <Text style={styles.genre} key={genre.id}>
+                        {genre.name}
+                      </Text>
+                    );
+                  })}
+                </View>
+              )}
+              <Star style={styles.star} score={movieDetail.vote_average / 2} />
+              <Text style={styles.overview}>{movieDetail.overview}</Text>
+              <Text style={styles.releaseDate}>
+                {'Release date: ' +
+                  dateFormat(movieDetail.release_date, 'mmmm dS, yyyy')}
+              </Text>
+            </View>
+          </ScrollView>
+          <Modal animationType="slide" visible={modalVisible}>
+            <View style={styles.videoModal}>
+              <Pressable onPress={() => videoShown()}>
+                <Text>{'Hide Modal'}</Text>
+              </Pressable>
+            </View>
+          </Modal>
+        </View>
       )}
       {!loaded && <ActivityIndicator size="large" />}
     </React.Fragment>
@@ -126,6 +142,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -30,
     right: 10,
+  },
+  videoModal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

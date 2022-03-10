@@ -5,8 +5,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class PlayButton extends React.PureComponent {
   render() {
+    const {handlePress} = this.props;
     return (
-      <Pressable style={styles.button}>
+      <Pressable onPress={() => handlePress()} style={styles.button}>
         <Ionicons name={'play'} size={30} color={'#ffff'} />
       </Pressable>
     );
