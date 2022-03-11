@@ -10,7 +10,7 @@ const propTypes = {
 class Card extends React.PureComponent {
   render() {
     const {navigation, item} = this.props;
-    console.log(item.poster_path);
+    //console.log(item.poster_path);
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate('Detail', {movieId: item.id})}
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignItems: 'center',
     height: 200,
+    marginBottom: 8,
   },
   image: {
     height: 200,
